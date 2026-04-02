@@ -1,0 +1,23 @@
+COPY/PASTE STEPS FOR A MAC
+
+mkdir budget_pro_premium
+cd budget_pro_premium
+flutter create .
+
+# Replace the generated lib/main.dart and pubspec.yaml
+# with the files from this ZIP, then run:
+
+flutter pub get
+flutter run -d ios
+
+# For an installable release build:
+flutter build ios --release
+
+Then open:
+open ios/Runner.xcworkspace
+
+In Xcode:
+- choose your Apple Developer Team
+- set a unique Bundle Identifier
+- Product > Archive
+- distribute through TestFlight or direct device install
