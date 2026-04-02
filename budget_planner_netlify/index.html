@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Budget Planner Premium+</title>
+  <meta name="theme-color" content="#0b1220" />
+  <meta name="description" content="Premium installable budget app with bills, insurance, payments, and API settings." />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" href="icons/icon-192.png" />
+  <link rel="apple-touch-icon" href="icons/icon-192.png" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="bg-orb orb-1"></div>
+  <div class="bg-orb orb-2"></div>
+
+  <div class="app-shell">
+    <header class="hero glass">
+      <div class="hero-copy">
+        <div class="eyebrow">Premium Budgeting + Payments</div>
+        <h1>Budget Planner Premium+</h1>
+        <p id="monthLabel">Current month</p>
+      </div>
+      <div class="hero-actions">
+        <button id="installBtn" class="btn primary hidden">Install App</button>
+        <button id="themeBtn" class="btn ghost">Toggle Theme</button>
+      </div>
+    </header>
+
+    <main class="content">
+      <section id="tab-home" class="tab active">
+        <div class="spotlight glass">
+          <div>
+            <div class="spotlight-label">Available Balance</div>
+            <div class="spotlight-value" id="balanceMain">$0.00</div>
+            <div class="spotlight-sub">Income <span id="incomeInline">$0.00</span> • Expenses <span id="expensesInline">$0.00</span></div>
+          </div>
+          <div class="stack-actions">
+            <button class="btn primary" id="rolloverBtn">Close Month</button>
+            <button class="btn ghost" id="quickAddInsuranceBtn">+ Insurance</button>
+          </div>
+        </div>
+
+        <div class="card-grid">
+          <article class="stat-card glass">
+            <div class="stat-label">Monthly Income</div>
+            <div class="stat-value" id="incomeCard">$0.00</div>
+          </article>
+          <article class="stat-card glass">
+            <div class="stat-label">Monthly Expenses</div>
+            <div class="stat-value" id="expenseCard">$0.00</div>
+          </article>
+          <article class="stat-card glass">
+            <div class="stat-label">Bills Open</div>
+            <div class="stat-value" id="openBillsCard">0</div>
+          </article>
+          <article class="stat-card glass">
+            <div class="stat-label">Bills Paid</div>
+            <div class="stat-value" id="paidBillsCard">0</div>
+          </article>
+        </div>
+
+        <div class="layout-2">
+          <section class="glass panel">
+            <div class="panel-head">
+              <h3>Spending by Category</h3>
+            </div>
+            <div id="spendingChart" class="chart-list"></div>
+          </section>
+
+          <section class="glass panel">
+            <div class="panel-head">
+              <h3>Quick Summary</h3>
+            </div>
+            <ul id="summaryList" class="summary-list"></ul>
+          </section>
+        </div>
+      </section>
+
+      <section id="tab-budget" class="tab">
+        <section class="glass panel">
+          <div class="panel-head"><h3>Monthly Budget</h3></div>
+          <div class="field">
+            <label for="monthlyIncome">Monthly Income</label>
+            <input id="monthlyIncome" type="number" min="0" step="0.01" placeholder="0.00" />
+          </div>
+          <div class="panel-head compact-head">
+            <h3>Expense Categories</h3>
+            <button id="addCategoryBtn" class="btn primary">+ Add Category</button>
+          </div>
+          <div id="expenseFields" class="expense-grid"></div>
+        </section>
+      </section>
+
+      <section id="tab-bills" class="tab">
+        <section class="glass panel">
+          <div class="panel-head wrap-gap">
+            <h3>Bills & Due Dates</h3>
+            <div class="inline-actions">
+              <input id="billSearch" class="search-input" placeholder="Search bills" />
+              <button class="btn primary" id="addBillBtn">+ Add Bill</button>
+            </div>
+          </div>
+          <div id="billList" class="list"></div>
+        </section>
+      </section>
+
+      <section id="tab-calendar" class="tab">
+        <section class="glass panel">
+          <div class="calendar-top">
+            <button id="prevMonthBtn" class="btn ghost">←</button>
+            <h3 id="calendarTitle"></h3>
+            <button id="nextMonthBtn" class="btn ghost">→</button>
+          </div>
+          <div id="calendarGrid" class="calendar-grid"></div>
+        </section>
+
+        <section class="glass panel">
+          <div class="panel-head"><h3>Selected Day Bills</h3></div>
+          <div id="selectedBills"></div>
+        </section>
+      </section>
+
+      <section id="tab-payments" class="tab">
+        <section class="glass panel">
+          <div class="panel-head">
+            <h3>Payment Center</h3>
+            <button class="btn primary" id="openPaymentSettingsBtn">Payment Settings</button>
+          </div>
+          <div class="callout">
+            <strong>How this works:</strong> add a payment URL on each bill or set a global payment link template in Settings. This version is Netlify-safe and client-only, so it opens your payment page rather than processing cards directly inside the app.
+          </div>
+          <div id="paymentQueue" class="list"></div>
+        </section>
+      </section>
+
+      <section id="tab-settings" class="tab">
+        <section class="glass panel">
+          <div class="panel-head"><h3>App Settings</h3></div>
+          <div class="settings-grid">
+            <div class="field">
+              <label for="apiProvider">API Provider Name</label>
+              <input id="apiProvider" placeholder="OpenAI, Stripe, Custom" />
+            </div>
+            <div class="field">
+              <label for="apiBaseUrl">API Base URL</label>
+              <input id="apiBaseUrl" placeholder="https://api.example.com/v1" />
+            </div>
+            <div class="field full-span">
+              <label for="apiKeyInput">API Key</label>
+              <input id="apiKeyInput" placeholder="Paste API key here" />
+            </div>
+            <div class="field full-span">
+              <label for="paymentLinkTemplate">Global Payment Link Template</label>
+              <input id="paymentLinkTemplate" placeholder="https://pay.example.com?bill={billId}&amount={amount}&name={title}" />
+            </div>
+          </div>
+          <div class="toolbar">
+            <button class="btn primary" id="saveSettingsBtn">Save Settings</button>
+            <button class="btn ghost" id="copySettingsBtn">Copy JSON</button>
+            <button class="btn ghost" id="exportDataBtn">Export Backup</button>
+            <label class="btn ghost file-btn" for="importDataInput">Import Backup</label>
+            <input id="importDataInput" type="file" accept="application/json" class="hidden-file" />
+          </div>
+          <div id="settingsStatus" class="helper-text"></div>
+        </section>
+      </section>
+
+      <section id="tab-reports" class="tab">
+        <section class="glass panel">
+          <div class="panel-head"><h3>Monthly History</h3></div>
+          <div id="historyList" class="list"></div>
+        </section>
+      </section>
+    </main>
+
+    <nav class="bottom-nav glass six-up">
+      <button data-tab="home" class="nav-item active">Home</button>
+      <button data-tab="budget" class="nav-item">Budget</button>
+      <button data-tab="bills" class="nav-item">Bills</button>
+      <button data-tab="calendar" class="nav-item">Calendar</button>
+      <button data-tab="payments" class="nav-item">Payments</button>
+      <button data-tab="settings" class="nav-item">Settings</button>
+      <button data-tab="reports" class="nav-item">Reports</button>
+    </nav>
+  </div>
+
+  <dialog id="billDialog">
+    <form method="dialog" class="dialog-form" id="billForm">
+      <h3 id="billDialogTitle">Add Bill</h3>
+      <input type="hidden" id="billId" />
+      <div class="field">
+        <label for="billName">Bill Name</label>
+        <input id="billName" required />
+      </div>
+      <div class="field-grid two-up">
+        <div class="field">
+          <label for="billCategory">Category</label>
+          <input id="billCategory" placeholder="Insurance, House, Auto, etc." />
+        </div>
+        <div class="field">
+          <label for="billType">Bill Type</label>
+          <select id="billType">
+            <option value="recurring">Recurring</option>
+            <option value="one-time">One-Time</option>
+            <option value="insurance">Insurance</option>
+          </select>
+        </div>
+      </div>
+      <div class="field-grid two-up">
+        <div class="field">
+          <label for="billAmount">Amount</label>
+          <input id="billAmount" type="number" min="0" step="0.01" required />
+        </div>
+        <div class="field">
+          <label for="billDueDate">Due Date</label>
+          <input id="billDueDate" type="date" required />
+        </div>
+      </div>
+      <div class="field-grid two-up">
+        <div class="field">
+          <label for="billMerchant">Merchant / Company</label>
+          <input id="billMerchant" placeholder="Progressive, Water Dept, etc." />
+        </div>
+        <div class="field">
+          <label for="billAutoPay">Auto Pay</label>
+          <select id="billAutoPay">
+            <option value="no">No</option>
+            <option value="yes">Yes</option>
+          </select>
+        </div>
+      </div>
+      <div class="field">
+        <label for="billPaymentUrl">Payment URL</label>
+        <input id="billPaymentUrl" placeholder="https://pay.example.com/your-bill" />
+      </div>
+      <div class="field">
+        <label for="billNotes">Notes</label>
+        <textarea id="billNotes" rows="3" placeholder="Policy number, confirmation details, billing notes"></textarea>
+      </div>
+      <div class="dialog-actions">
+        <button type="button" class="btn ghost" id="cancelBillBtn">Cancel</button>
+        <button type="submit" class="btn primary">Save Bill</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="categoryDialog">
+    <form method="dialog" class="dialog-form" id="categoryForm">
+      <h3>Add Category</h3>
+      <div class="field">
+        <label for="categoryName">Category Name</label>
+        <input id="categoryName" placeholder="Internet, Childcare, Insurance" required />
+      </div>
+      <div class="field">
+        <label for="categoryIcon">Icon</label>
+        <input id="categoryIcon" placeholder="🧾" maxlength="4" />
+      </div>
+      <div class="dialog-actions">
+        <button type="button" class="btn ghost" id="cancelCategoryBtn">Cancel</button>
+        <button type="submit" class="btn primary">Add Category</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script src="app.js"></script>
+</body>
+</html>

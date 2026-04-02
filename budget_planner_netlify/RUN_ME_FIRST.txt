@@ -1,0 +1,15 @@
+BUDGET PLANNER PREMIUM PLUS
+
+This folder is ready to drag and drop into Netlify.
+
+WHAT WAS ADDED
+- Insurance tracking
+- Add any other bills anytime
+- API key settings screen
+- Payment link support from inside app
+- Search bills
+- Import/export backup
+
+NOTE
+This version stays fully static so it can deploy cleanly to Netlify.
+That means payment processing is link-based from the app unless you later connect a backend.
